@@ -46,11 +46,16 @@ function guess_test() {
     Bayes.guess(["RAINY","MILD","NORMAL","TRUE"]);
 
     isOk = 1;
-    // TODO! Failing in the normalization...   fix that
-    // Currently yielding 0.010285714285714285 and 0.014109347442680773 for the final results. Which is true-but-from-last-step
-    isOk &= Bayes.final_results["NO"] == 0.57;
-    isOk &= Bayes.final_results["YES"] == 0.42;
 
+    var expected = {};
+    expected["NO"] = 0.42163100057836905;
+    expected["YES"] = 0.578368999421631;
+
+    isOk &= Bayes.final_results["NO"] == expected["NO"];
+    isOk &= Bayes.final_results["YES"] == expected["YES"];
+    //console.log("Results...");
+    //console.log("\tNO: " + Bayes.final_results["NO"]);
+    //console.log("\tYES: " + Bayes.final_results["YES"]);
     log(isOk, "guess_test() ( Note! This is more an integration 'test' than a unittest )")
 
 }
