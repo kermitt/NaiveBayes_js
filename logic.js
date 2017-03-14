@@ -54,8 +54,6 @@ Bayes = {
     },
 
     guess : function(given_dimensions) {
-
-
         // Step1 ///////// FIND LIKELYHOODS
 
         var results = {};
@@ -75,33 +73,24 @@ Bayes = {
             }
         }
 
-        // This loop to multiply the above against P(c)
-        var all_likelyhoods = 0;
-
         for ( var bucket in this.buckets ) {
             let bucket_likelyhood = this.buckets[bucket].seen / this.total; // e.g., 5/9
             results[bucket] *= bucket_likelyhood;
             //console.log("bucket_likelyhood: " + bucket_likelyhood + " this.buckets[bucket] " + this.buckets[bucket].seen);
-            all_likelyhoods += bucket_likelyhood;
+
         }
 
-
+        // This loop to multiply the above against P(c)
         // Step2 ///////// NORMALIZE
+        var all_likelyhoods = 0;
         for ( var bucket in results) {
+            all_likelyhoods += results[bucket];
+        }
 
-            var b = "A: " + bucket + "\t" + results[bucket] + "\t" + all_likelyhoods;
-
+        for ( var bucket in results) {
             results[bucket] /= all_likelyhoods;
-
-            b = "A: " + bucket + "\t" + results[bucket] + "\t" + all_likelyhoods;
-
-
-            console.log(b);
-
-
         }
         this.final_results = results;
-        return results;
     },
 
     display : function() {
