@@ -88,7 +88,17 @@ Bayes = {
 
         // Step2 ///////// NORMALIZE
         for ( var bucket in results) {
+
+            var b = "A: " + bucket + "\t" + results[bucket] + "\t" + all_likelyhoods;
+
             results[bucket] /= all_likelyhoods;
+
+            b = "A: " + bucket + "\t" + results[bucket] + "\t" + all_likelyhoods;
+
+
+            console.log(b);
+
+
         }
         this.final_results = results;
         return results;
