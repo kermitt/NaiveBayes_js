@@ -10,13 +10,11 @@ Seen.prototype.setLikelyhood = function(class_prior) {
 
 Bayes = {
     setup: function (all_buckets, all_dimensions) {
-        //this.buckets = all_buckets; // e.g., ["MALE","FEMALE"]
-
         this.dimension_names = all_dimensions;
-
-        this.dimensions_LoH = []; // e.g., ["HEIGHT","WATCHES_FOOTBALL","LIKES_LEGOS", "WEIGHT"]
-        this.buckets = {};
-
+        this.dimensions_LoH = []; //e.g., ["HEIGHT","WATCHES_FOOTBALL","LIKES_LEGOS", "BALLET", "WEIGHT"]
+        this.buckets = {};//e.g., ["MALE","FEMALE"]
+        this.total = 0;
+        this.final_results = {};
         for ( var index in all_buckets) {
             let key = all_buckets[index];
             this.buckets[key] = new Seen();
@@ -40,11 +38,10 @@ Bayes = {
             this.dimensions_LoH[index][actual][bucket].seen++;
         }
         this.buckets[bucket].seen++;
+        this.total++;
     },
 
     calculate: function () {
-
-
         for (var index in this.dimensions_LoH) {
             for (var actual in this.dimensions_LoH[index]) {
                 for (var bucket in this.dimensions_LoH[index][actual]) {
@@ -56,28 +53,20 @@ Bayes = {
         }
     },
 
-    // Boxic boku mah gosis
     guess : function(given_dimensions) {
 
+
+        // Step1 ///////// FIND LIKELYHOODS
+
         var results = {};
-
-
-        console.log(given_dimensions)
-
-
-
+        // This loop to multiply each of the P(x[i]|c)
         for (var index in given_dimensions) {
             var actual = given_dimensions[index];
             for (var bucket in this.dimensions_LoH[index][actual]) {
                 let seen = this.dimensions_LoH[index][actual][bucket];
                 let subtotal = this.buckets[bucket].seen;
-
-
-                console.log(index + " " + actual + " " + bucket + " seen " + seen.seen + " likelyhood: " + seen.likelyhood.toFixed(3) + "  sub " + subtotal );
-
+                //console.log(index + " " + actual + " " + bucket + " seen " + seen.seen + " likelyhood: " + seen.likelyhood.toFixed(3) + "  sub " + subtotal );
                 this.dimensions_LoH[index][actual][bucket].setLikelyhood(subtotal);
-
-
                 if ( ! results.hasOwnProperty(bucket)) {
                     results[bucket] = seen.likelyhood;
                 } else {
@@ -86,29 +75,24 @@ Bayes = {
             }
         }
 
-        var total = 0;
-        for ( var bucket in this.buckets ) {
-            total += this.buckets[bucket].seen;
-        }
+        // This loop to multiply the above against P(c)
+        var all_likelyhoods = 0;
 
-
-        console.log("total: " +  total);
         for ( var bucket in this.buckets ) {
-            let bucket_likelyhood = this.buckets[bucket].seen / total; // e.g., 5/9
+            let bucket_likelyhood = this.buckets[bucket].seen / this.total; // e.g., 5/9
             results[bucket] *= bucket_likelyhood;
-             console.log("bucket_likelyhood: " + bucket_likelyhood + " this.buckets[bucket] " + this.buckets[bucket].seen);
-        }
-
-        for ( var i in results ) {
-
-            console.log( i + "............." + results[i]);
-
+            //console.log("bucket_likelyhood: " + bucket_likelyhood + " this.buckets[bucket] " + this.buckets[bucket].seen);
+            all_likelyhoods += bucket_likelyhood;
         }
 
 
+        // Step2 ///////// NORMALIZE
+        for ( var bucket in results) {
+            results[bucket] /= all_likelyhoods;
+        }
+        this.final_results = results;
+        return results;
     },
-
-
 
     display : function() {
         for (var index in this.dimensions_LoH) {
@@ -127,6 +111,10 @@ Bayes = {
         for ( var key in this.buckets ) {
             let seen = this.buckets[key];
             console.log(seen.seen +"\t" + key );
+        }
+        console.log("+------ RESULTS ----------------+");
+        for ( var bucket in this.final_results) {
+            console.log(bucket + "\t" + this.final_results[bucket]);
         }
     }
 }

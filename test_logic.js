@@ -25,13 +25,37 @@ function setup() {
     Bayes.calculate();
 }
 
-function guess() {
+function guess_test() {
+
+    //Step1: Find likelyhood of Bayes.guess(["RAINY","MILD","NORMAL","TRUE"]);
+    //Likelyhood of yes:
+    // P(OUTLOOK=RAINY | YES ) *
+    // P(OUTLOOK=TEMP | YES ) *
+    // P(OUTLOOK=HUMIDITY | YES ) *
+    // P(OUTLOOK=WINDY | YES ) *
+    // P(YES)
+    // 0.014
+
+    // Likelyhood of no: 0.01
+
+    //Step2: Normalize
+    //P(yes) = 0.014 / ( 0.014 + 0.01 ) = 0.57
+    //P(no) = 0.011 / ( 0.014 + 0.01 ) = 0.42
+
 
     Bayes.guess(["RAINY","MILD","NORMAL","TRUE"]);
 
+    isOk = 1;
+    isOk &= Bayes.final_results["NO"] == 0.010285714285714285;
+    isOk &= Bayes.final_results["YES"] == 0.014109347442680773;
+
+    log(isOk, "guess_test() ( Note! This is more an integration 'test' than a unittest )")
 
 }
-
+function log(result, whence){
+    var verdict = result == 1 ? "PASS" : "FAIL";
+    console.log(verdict + "\t" + whence);
+}
 setup();
-guess();
+guess_test();
 //Bayes.display();
