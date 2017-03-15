@@ -1,0 +1,23 @@
+{
+  "name": "naive_bayes",
+  "version": "0.0.1",
+  "description": "",
+  "main": "bayes_binning.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kermitt/NaiveBayes_js.git"
+  },
+  "author": "Kermitt <kermitt@github.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kermitt/NaiveBayes_js/issues"
+  },
+  "homepage": "https://github.com/kermitt/NaiveBayes_js#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0"
+  }
+}
