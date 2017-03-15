@@ -1,4 +1,4 @@
-var Bayes = require("./logic").Bayes;
+var Bayes = require("./bayes_binning").Bayes;
 
 function setup() {
 
