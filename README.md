@@ -1,46 +1,42 @@
-# NaiveBayes_js
-# SAKM: Boxic boku mah gosis
+# Naive Bayes
 
+A pure-javascript implementation of Bayes theorom, which assumes that predictors are independent.
 
- 'naive bayes' - Bayes' theorom of assuming that predictors are independent.
+![P(c|x) =\frac{P(x|c) P(c)}{P(x)}](https://latex.codecogs.com/png.latex?%5Cinline%20%5CLARGE%20P%28c%7Cx%29%20%3D%5Cfrac%7BP%28x%7Cc%29%20P%28c%29%7D%7BP%28x%29%7D)
 
-<pre>
-                P(x|c) P(c)
- P(c|x) = -------------------------
-                   P(x)
+![[Posterior Probability] = \frac{[Likelihood] \times [Class Prior Probability]}{[Predictor Prior Probability]}](https://latex.codecogs.com/png.latex?%5Cinline%20%5CLARGE%20%5BPosterior%20Probability%5D%20%3D%20%5Cfrac%7B%5BLikelihood%5D%20%5Ctimes%20%5BClass%20Prior%20Probability%5D%7D%7B%5BPredictor%20Prior%20Probability%5D%7D)
 
-                             [Likelyhood] * [Class Prior Probability ]
- [Posterior Probability] = --------------------------------------------
-                             [Predictor Prior Probability]
+## installation
 
+`npm i naive_bayes`
 
+## usage
 
+Example data taken from [here](https://www.youtube.com/watch?v=XcwH9JGfZOU).
 
-     EXAMPLE USAGE via https://www.youtube.com/watch?v=XcwH9JGfZOU
-     Bayes.setup(["YES","NO"],["OUTLOOK","TEMP","HUMIDITY","WINDY"]);
+```js
+ const bayes = require('naive_bayes')
+ const trainingData = bayes.train({
+  "YES": [
+    [ "SUNNY", "MILD", "HIGH", "FALSE"]
+    [ "SUNNY", "COOL", "NORMAL", "FALSE"]
+    [ "GREY", "COOL", "NORMAL", "TRUE"]
+    [ "RAINY", "COOL", "NORMAL", "FALSE"]
+    [ "SUNNY", "MILD", "NORMAL", "FALSE"]
+    [ "RAINY", "MILD", "NORMAL", "TRUE"]
+    [ "GREY", "MILD", "HIGH", "TRUE"]
+    [ "GREY", "HOT", "NORMAL", "FALSE"]
+  ],
+  "NO": [
+    [ "RAINY", "HOT", "HIGH", "FALSE"]
+    [ "RAINY", "HOT", "HIGH", "TRUE"]
+    [ "SUNNY", "COOL", "NORMAL", "TRUE"]
+    [ "RAINY", "MILD", "HIGH", "FALSE"]
+    [ "SUNNY", "MILD", "HIGH", "TRUE"]
+  ]
+})
+console.log(bayes.guess(trainingData, ['RAINY', 'MILD', 'NORMAL', 'TRUE']))
+```
 
-     //P(x|c) = P(Sunny|YES) = 3 / 9 = 0.33
-     Bayes.train("NO",["RAINY","HOT","HIGH","FALSE"]);
-     Bayes.train("NO",["RAINY","HOT","HIGH","TRUE"]);
-     Bayes.train("YES",["GREY","HOT","HIGH","FALSE"]);
-     Bayes.train("YES", ["SUNNY","MILD","HIGH","FALSE"]);
-     Bayes.train("YES",["SUNNY","COOL","NORMAL","FALSE"]);
-     Bayes.train("NO",["SUNNY","COOL","NORMAL","TRUE"]);
-     Bayes.train("YES",["GREY","COOL","NORMAL","TRUE"]);
-     Bayes.train("NO",["RAINY","MILD","HIGH","FALSE"]);
-     Bayes.train("YES",["RAINY","COOL","NORMAL","FALSE"]);
-     Bayes.train("YES",["SUNNY","MILD","NORMAL","FALSE"]);
-     Bayes.train("YES",["RAINY","MILD","NORMAL","TRUE"]);
-     Bayes.train("YES",["GREY","MILD","HIGH","TRUE"]);
-     Bayes.train("YES",["GREY","HOT","NORMAL","FALSE"]);
-     Bayes.train("NO",["SUNNY","MILD","HIGH","TRUE"]);
-
-     Bayes.calculate();
-     Bayes.guess();
-     RESULTS:
-     Bayes.guess(["RAINY","MILD","NORMAL","TRUE"]);
- NO: 0.42163100057836905
- YES: 0.578368999421631
-
-
-</pre>
+**NO**: `0.42163100057836905`
+**YES**: `0.578368999421631`

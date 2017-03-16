@@ -1,0 +1,19 @@
+{
+  "YES": [
+    [ "SUNNY", "MILD", "HIGH", "FALSE"]
+    [ "SUNNY", "COOL", "NORMAL", "FALSE"]
+    [ "GREY", "COOL", "NORMAL", "TRUE"]
+    [ "RAINY", "COOL", "NORMAL", "FALSE"]
+    [ "SUNNY", "MILD", "NORMAL", "FALSE"]
+    [ "RAINY", "MILD", "NORMAL", "TRUE"]
+    [ "GREY", "MILD", "HIGH", "TRUE"]
+    [ "GREY", "HOT", "NORMAL", "FALSE"]
+  ],
+  "NO": [
+    [ "RAINY", "HOT", "HIGH", "FALSE"]
+    [ "RAINY", "HOT", "HIGH", "TRUE"]
+    [ "SUNNY", "COOL", "NORMAL", "TRUE"]
+    [ "RAINY", "MILD", "HIGH", "FALSE"]
+    [ "SUNNY", "MILD", "HIGH", "TRUE"]
+  ]
+}
