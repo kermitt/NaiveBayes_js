@@ -1,19 +1,20 @@
 {
-  "YES": [
-    [ "SUNNY", "MILD", "HIGH", "FALSE"]
-    [ "SUNNY", "COOL", "NORMAL", "FALSE"]
-    [ "GREY", "COOL", "NORMAL", "TRUE"]
-    [ "RAINY", "COOL", "NORMAL", "FALSE"]
-    [ "SUNNY", "MILD", "NORMAL", "FALSE"]
-    [ "RAINY", "MILD", "NORMAL", "TRUE"]
-    [ "GREY", "MILD", "HIGH", "TRUE"]
-    [ "GREY", "HOT", "NORMAL", "FALSE"]
-  ],
-  "NO": [
-    [ "RAINY", "HOT", "HIGH", "FALSE"]
-    [ "RAINY", "HOT", "HIGH", "TRUE"]
-    [ "SUNNY", "COOL", "NORMAL", "TRUE"]
-    [ "RAINY", "MILD", "HIGH", "FALSE"]
-    [ "SUNNY", "MILD", "HIGH", "TRUE"]
+  "yes": [
+    ["Overcast", "Hot", "High", false], 
+    ["Sunny", "Mild", "High", false], 
+    ["Sunny", "Cool", "Normal", false], 
+    ["Overcast", "Cool", "Normal", true], 
+    ["Rainy", "Cool", "Normal", false], 
+    ["Sunny", "Mild", "Normal", false], 
+    ["Rainy", "Mild", "Normal", true], 
+    ["Overcast", "Mild", "High", true], 
+    ["Overcast", "Hot", "Normal", false]
+  ], 
+  "no": [
+    ["Rainy", "Hot", "High", false], 
+    ["Rainy", "Hot", "High", true], 
+    ["Sunny", "Cool", "Normal", true], 
+    ["Rainy", "Mild", "High", false], 
+    ["Sunny", "Mild", "High", true]
   ]
 }

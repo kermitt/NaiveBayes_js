@@ -1,14 +1,23 @@
 /* global describe it */
 
 const expect = require('chai').expect
-
-const bayes = require('../index')
+const {train, guess} = require('../src/Bayes')
+const observations = require('./observations.json')
+const trained = require('./trained.json')
 
 describe('Naive Bayes', () => {
-  it('should guess that you will play golf', () => {
-    const trainingData = bayes.train(require('./observations.json'))
-    const results = bayes.guess(trainingData, ['RAINY', 'MILD', 'NORMAL', 'TRUE'])
-    expect(results['NO']).to.equal(0.42163100057836905)
-    expect(results['YES']).to.equal(0.578368999421631)
+  describe('train', () => {
+    it('should generate correct trained model from observations', () => {
+      expect(train(observations)).to.deep.equal(trained)
+    })
+  })
+
+  describe('guess', () => {
+    it('should guess correctly with a trained model', () => {
+      expect(guess(trained, ['Rainy', 'Mild', 'Normal', true])).to.deep.equal({
+        yes: 0.578368999,
+        no: 0.421631001
+      })
+    })
   })
 })

@@ -1,10 +1,17 @@
 # Naive Bayes
 
-A pure-javascript implementation of Bayes theorom, which assumes that predictors are independent.
+Naive Bayes classifier, in pure-javascript
 
-![P(c|x) =\frac{P(x|c) P(c)}{P(x)}](https://latex.codecogs.com/png.latex?%5Cinline%20%5CLARGE%20P%28c%7Cx%29%20%3D%5Cfrac%7BP%28x%7Cc%29%20P%28c%29%7D%7BP%28x%29%7D)
+Based on ideas fand examples from [here](https://www.youtube.com/watch?v=XcwH9JGfZOU).
 
-![[Posterior Probability] = \frac{[Likelihood] \times [Class Prior Probability]}{[Predictor Prior Probability]}](https://latex.codecogs.com/png.latex?%5Cinline%20%5CLARGE%20%5BPosterior%20Probability%5D%20%3D%20%5Cfrac%7B%5BLikelihood%5D%20%5Ctimes%20%5BClass%20Prior%20Probability%5D%7D%7B%5BPredictor%20Prior%20Probability%5D%7D)
+![P(c|x) = (P(x|c) * P(c)) / P(x)](https://latex.codecogs.com/png.latex?%5Cinline%20%5CLARGE%20P%28c%7Cx%29%20%3D%5Cfrac%7BP%28x%7Cc%29%20P%28c%29%7D%7BP%28x%29%7D)
+
+```
+P(c|x) = P(Yes | Sunny) = Posterior Probability
+P(x|c) = P(Sunny | Yes) = Likelihood
+P(c) = P(Yes) = Class Prior Probability
+P(x) = P(Sunny) = Predictor Prior Probability
+```
 
 ## installation
 
@@ -12,31 +19,52 @@ A pure-javascript implementation of Bayes theorom, which assumes that predictors
 
 ## usage
 
-Example data taken from [here](https://www.youtube.com/watch?v=XcwH9JGfZOU).
-
 ```js
  const bayes = require('naive_bayes')
- const trainingData = bayes.train({
-  "YES": [
-    [ "SUNNY", "MILD", "HIGH", "FALSE"]
-    [ "SUNNY", "COOL", "NORMAL", "FALSE"]
-    [ "GREY", "COOL", "NORMAL", "TRUE"]
-    [ "RAINY", "COOL", "NORMAL", "FALSE"]
-    [ "SUNNY", "MILD", "NORMAL", "FALSE"]
-    [ "RAINY", "MILD", "NORMAL", "TRUE"]
-    [ "GREY", "MILD", "HIGH", "TRUE"]
-    [ "GREY", "HOT", "NORMAL", "FALSE"]
-  ],
-  "NO": [
-    [ "RAINY", "HOT", "HIGH", "FALSE"]
-    [ "RAINY", "HOT", "HIGH", "TRUE"]
-    [ "SUNNY", "COOL", "NORMAL", "TRUE"]
-    [ "RAINY", "MILD", "HIGH", "FALSE"]
-    [ "SUNNY", "MILD", "HIGH", "TRUE"]
+ 
+ // predict if the person will play golf based on
+ // [ Outlook, Temp, Humidity, Windy ]
+
+ const classifier = bayes.train({
+  yes: [
+    ['Overcast', 'Hot', 'High', false], 
+    ['Sunny', 'Mild', 'High', false], 
+    ['Sunny', 'Cool', 'Normal', false], 
+    ['Overcast', 'Cool', 'Normal', true], 
+    ['Rainy', 'Cool', 'Normal', false], 
+    ['Sunny', 'Mild', 'Normal', false], 
+    ['Rainy', 'Mild', 'Normal', true], 
+    ['Overcast', 'Mild', 'High', true], 
+    ['Overcast', 'Hot', 'Normal', false]
+  ], 
+  no: [
+    ['Rainy', 'Hot', 'High', false], 
+    ['Rainy', 'Hot', 'High', true], 
+    ['Sunny', 'Cool', 'Normal', true], 
+    ['Rainy', 'Mild', 'High', false], 
+    ['Sunny', 'Mild', 'High', true]
   ]
 })
-console.log(bayes.guess(trainingData, ['RAINY', 'MILD', 'NORMAL', 'TRUE']))
+console.log(bayes.guess(classifier, ['Rainy', 'Mild', 'Normal', true]))
 ```
 
-**NO**: `0.42163100057836905`
-**YES**: `0.578368999421631`
+**no**: `0.42163100057836905`
+**yes**: `0.578368999421631`
+
+To save a trained classifier, you could do this:
+
+```js
+const fs = require('fs')
+fs.writeFileSync('golf.json', JSON.stringify(classifier))
+```
+
+And then reconstitute it later with this:
+
+```js
+const bayes = require('naive_bayes')
+const classifier = require('./golf.json')
+
+const golfPredict = ( Outlook, Temp, Humidity, Windy ) => bayes.guess(classifier, [ Outlook, Temp, Humidity, Windy ])
+
+console.log(golfPredict('RAINY', 'MILD', 'NORMAL', true))
+```
