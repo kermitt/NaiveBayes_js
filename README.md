@@ -48,8 +48,8 @@ P(x) = P(Sunny) = Predictor Prior Probability
 console.log(bayes.guess(classifier, ['Rainy', 'Mild', 'Normal', true]))
 ```
 
-**no**: `0.42163100057836905`
 **yes**: `0.578368999421631`
+**no**: `0.421631000578369`
 
 To save a trained classifier, you could do this:
 

@@ -7,7 +7,8 @@
     "test": "standard && mocha",
     "test:watch": "npm test -- -w",
     "build": "babel src/Bayes.js -o index.js",
-    "prepublish": "npm test && npm build"
+    "prepublish": "npm run build",
+    "postversion": "git push && git push --tags"
   },
   "babel": {
     "presets": ["latest"]

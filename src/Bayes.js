@@ -1,3 +1,4 @@
+// TODO: try to combine more loops
 /**
  * Train a Bayesian classifier model
  * @param  {object} observations past observations, array of arrays, in object, keyed by outcome (eg {yes:[[],[],[]], no: [[],[],[]]})
@@ -37,7 +38,7 @@ const train = observations => {
     Pc[c[i]] = freq / cTotal
   })
 
-  // get unique x
+  // get unique x values across all observations, split into fields
   let x = []
   c.forEach(c => {
     observations[c].forEach((row, r) => {
@@ -57,8 +58,7 @@ const train = observations => {
     xRow.forEach(x => {
       const PxCounts = c.map(cname => observations[cname].filter(field => field.indexOf(x) !== -1).length)
       const Pxc = PxCounts.map((p, i) => p / observations[c[i]].length)
-      const Px = PxCounts.reduce((a, b) => a + b, 0) / cTotal
-      out.push({x, Px, Pxc})
+      out.push({x, Pxc})
     })
     return out
   })
@@ -73,16 +73,25 @@ const train = observations => {
  * @return {object}              Likelyhood of all outcomes
  */
 const guess = (trainedModel, observations) => {
-  // TODO: actually implement this
-  return {
-    yes: 0.578368999,
-    no: 0.421631001
+  // TODO: validate all observations values are in trainedModel.probabilities
+  if (trainedModel.probabilities.length !== observations.length) {
+    throw new Error(`Incorrect observation length. It should be ${trainedModel.probabilities.length}.`)
   }
-}
+  const out = {}
+  observations.forEach((xVal, ix) => {
+    const x = trainedModel.probabilities[ix].filter(v => v.x === xVal).pop()
+    Object.keys(trainedModel.Pc).forEach((ic, i) => {
+      if (!out[ic]) {
+        out[ic] = trainedModel.Pc[ic]
+      }
+      out[ic] *= x.Pxc[i]
+    })
+  })
 
-// ["Rainy", "Mild", "Normal", true]
-// yes = P(0=Rainy | Yes) * P(1=Mild | Yes) * P(2=Normal | Yes) * P(3=true | Yes) * P(Yes)
-// no  = P(0=Rainy | No)  * P(1=Mild | No)  * P(2=Normal | No)  * P(3=true | No)  * P(No)
-// normalize: answer / (answerYes + answerNo)
+  // normalize
+  const cTotal = Object.keys(out).map(c => out[c]).reduce((a, b) => a + b, 0)
+  Object.keys(out).forEach(ic => { out[ic] = out[ic] / cTotal })
+  return out
+}
 
 module.exports = {train, guess}

@@ -15,8 +15,8 @@ describe('Naive Bayes', () => {
   describe('guess', () => {
     it('should guess correctly with a trained model', () => {
       expect(guess(trained, ['Rainy', 'Mild', 'Normal', true])).to.deep.equal({
-        yes: 0.578368999,
-        no: 0.421631001
+        yes: 0.578368999421631,
+        no: 0.421631000578369
       })
     })
   })
