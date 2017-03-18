@@ -2,8 +2,6 @@
 
 Naive Bayes classifier, in pure-javascript
 
-Based on ideas fand examples from [here](https://www.youtube.com/watch?v=XcwH9JGfZOU).
-
 ![P(c|x) = (P(x|c) * P(c)) / P(x)](https://latex.codecogs.com/png.latex?%5Cinline%20%5CLARGE%20P%28c%7Cx%29%20%3D%5Cfrac%7BP%28x%7Cc%29%20P%28c%29%7D%7BP%28x%29%7D)
 
 ```
@@ -12,6 +10,10 @@ P(x|c) = P(Sunny | Yes) = Likelihood
 P(c) = P(Yes) = Class Prior Probability
 P(x) = P(Sunny) = Predictor Prior Probability
 ```
+
+Based on ideas and examples from here:
+
+[!["How Naive Bayes Classifier Works 1/2.. Understanding Naive Bayes and Example" on Youtube](https://img.youtube.com/vi/XcwH9JGfZOU/1.jpg)](https://www.youtube.com/watch?v=XcwH9JGfZOU)
 
 ## installation
 
