@@ -56,7 +56,7 @@ const train = observations => {
   const probabilities = x.map((xRow, xi) => {
     const out = []
     xRow.forEach(x => {
-      const PxCounts = c.map(cname => observations[cname].filter(field => field.indexOf(x) !== -1).length)
+      const PxCounts = c.map(cname => observations[cname].filter(field => field.indexOf(x) !== -1).length + 1)
       const Pxc = PxCounts.map((p, i) => p / observations[c[i]].length)
       out.push({x, Pxc})
     })
