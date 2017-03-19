@@ -1,38 +1,23 @@
 /* global describe it */
 
 const expect = require('chai').expect
+const {train, guess} = require('../src/Bayes')
+const observations = require('./observations.json')
+const trained = require('./trained.json')
 
-const Bayes = require('../index')
+describe('Naive Bayes', () => {
+  describe('train', () => {
+    it('should generate correct trained model from observations', () => {
+      expect(train(observations)).to.deep.equal(trained)
+    })
+  })
 
-describe('Bayes', () => {
-  it('should guess that you will play golf', () => {
-    // https://www.youtube.com/watch?v=XcwH9JGfZOU
-    Bayes.setup(['YES', 'NO'], ['OUTLOOK', 'TEMP', 'HUMIDITY', 'WINDY'])
-
-    // P(x|c) = P(Sunny|YES) = 3 / 9 = 0.33
-    Bayes.train('NO', ['RAINY', 'HOT', 'HIGH', 'FALSE'])
-    Bayes.train('NO', ['RAINY', 'HOT', 'HIGH', 'TRUE'])
-    Bayes.train('NO', ['SUNNY', 'COOL', 'NORMAL', 'TRUE'])
-    Bayes.train('NO', ['RAINY', 'MILD', 'HIGH', 'FALSE'])
-    Bayes.train('NO', ['SUNNY', 'MILD', 'HIGH', 'TRUE'])
-
-    Bayes.train('YES', ['GREY', 'HOT', 'HIGH', 'FALSE'])
-    Bayes.train('YES', ['SUNNY', 'MILD', 'HIGH', 'FALSE'])
-    Bayes.train('YES', ['SUNNY', 'COOL', 'NORMAL', 'FALSE'])
-
-    Bayes.train('YES', ['GREY', 'COOL', 'NORMAL', 'TRUE'])
-
-    Bayes.train('YES', ['RAINY', 'COOL', 'NORMAL', 'FALSE'])
-    Bayes.train('YES', ['SUNNY', 'MILD', 'NORMAL', 'FALSE'])
-    Bayes.train('YES', ['RAINY', 'MILD', 'NORMAL', 'TRUE'])
-    Bayes.train('YES', ['GREY', 'MILD', 'HIGH', 'TRUE'])
-    Bayes.train('YES', ['GREY', 'HOT', 'NORMAL', 'FALSE'])
-
-    Bayes.calculate()
-
-    Bayes.guess(['RAINY', 'MILD', 'NORMAL', 'TRUE'])
-
-    expect(Bayes.final_results['NO']).to.equal(0.42163100057836905)
-    expect(Bayes.final_results['YES']).to.equal(0.578368999421631)
+  describe('guess', () => {
+    it('should guess correctly with a trained model', () => {
+      expect(guess(trained, ['Rainy', 'Mild', 'Normal', true])).to.deep.equal({
+        yes: 0.42862741256000775,
+        no: 0.5713725874399922
+      })
+    })
   })
 })

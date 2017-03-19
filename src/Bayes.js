@@ -1,99 +1,97 @@
-var Seen = function () {
-  this.seen = 0
-  this.likelyhood = 0
-  this.posteriorProbability = 0
-}
+// TODO: try to combine more loops
+/**
+ * Train a Bayesian classifier model
+ * @param  {object} observations past observations, array of arrays, in object, keyed by outcome (eg {yes:[[],[],[]], no: [[],[],[]]})
+ * @return {object}              trained model
+ */
+const train = observations => {
+  let c
+  let observationLength
 
-Seen.prototype.setLikelyhood = function (class_prior) {
-  this.likelyhood = this.seen / class_prior
-}
-
-const Bayes = {
-  setup: function (all_buckets, all_dimensions) {
-    this.dimension_names = all_dimensions
-    this.dimensions_LoH = [] // e.g., ["HEIGHT","WATCHES_FOOTBALL","LIKES_LEGOS", "BALLET", "WEIGHT"]
-    this.buckets = {}// e.g., ["MALE","FEMALE"]
-    this.total = 0
-    this.final_results = {}
-    for (var index in all_buckets) {
-      let key = all_buckets[index]
-      this.buckets[key] = new Seen()
-    }
-
-    for (var index in all_dimensions) {
-      this.dimensions_LoH[index] = {}
-    }
-  },
-
-  train: function (bucket, actual_observations) {
-    for (var index in actual_observations) {
-      let actual = actual_observations[index]
-      if (!this.dimensions_LoH[index].hasOwnProperty(actual)) {
-        this.dimensions_LoH[index][actual] = {}
-      }
-      if (!this.dimensions_LoH[index][actual].hasOwnProperty(bucket)) {
-        this.dimensions_LoH[index][actual][bucket] = new Seen()
-      }
-      this.dimensions_LoH[index][actual][bucket].seen++
-    }
-    this.buckets[bucket].seen++
-    this.total++
-  },
-
-  calculate: function () {
-    for (var index in this.dimensions_LoH) {
-      for (var actual in this.dimensions_LoH[index]) {
-        for (var bucket in this.dimensions_LoH[index][actual]) {
-          let seen = this.dimensions_LoH[index][actual][bucket]
-          let subtotal = this.buckets[bucket].seen
-          this.dimensions_LoH[index][actual][bucket].setLikelyhood(subtotal)
+  // validate observations
+  try {
+    c = Object.keys(observations)
+    observationLength = observations[c[0]][0].length
+    if (!observationLength || !c.length) { throw new Error() }
+    c.forEach(o => {
+      observations[o].forEach(row => {
+        if (row.length !== observationLength) {
+          throw new Error()
         }
-      }
-    }
-  },
-
-  guess: function (given_dimensions) {
-        // Step1 ///////// FIND LIKELYHOODS
-
-    var results = {}
-        // This loop to multiply each of the P(x[i]|c)
-    for (var index in given_dimensions) {
-      var actual = given_dimensions[index]
-      for (var bucket in this.dimensions_LoH[index][actual]) {
-        let seen = this.dimensions_LoH[index][actual][bucket]
-        let subtotal = this.buckets[bucket].seen
-                // console.log(index + " " + actual + " " + bucket + " seen " + seen.seen + " likelyhood: " + seen.likelyhood.toFixed(3) + "  sub " + subtotal );
-        this.dimensions_LoH[index][actual][bucket].setLikelyhood(subtotal)
-        if (!results.hasOwnProperty(bucket)) {
-          results[bucket] = seen.likelyhood
-        } else {
-          results[bucket] *= seen.likelyhood
-        }
-      }
-    }
-
-    for (var bucket in this.buckets) {
-      let bucket_likelyhood = this.buckets[bucket].seen / this.total // e.g., 5/9
-      results[bucket] *= bucket_likelyhood
-            // console.log("bucket_likelyhood: " + bucket_likelyhood + " this.buckets[bucket] " + this.buckets[bucket].seen);
-    }
-
-        // This loop to multiply the above against P(c)
-        // Step2 ///////// NORMALIZE
-    var all_likelyhoods = 0
-    for (var bucket in results) {
-      all_likelyhoods += results[bucket]
-    }
-
-    for (var bucket in results) {
-      results[bucket] /= all_likelyhoods
-    }
-    this.final_results = results
+      })
+    })
+  } catch (e) {
+    throw new Error('Observations must be an object of multiple observations with an array of arrays of observations all of the same observation length ie: {yes:[[1,1]], no:[[0,1],[1,0],[0,0]]}')
   }
+
+  let cTotal = 0
+  const cFreq = []
+  const Pc = {}
+
+  // c-freq
+  c.forEach(c => {
+    cFreq.push(observations[c].length)
+    cTotal += observations[c].length
+  })
+  // P(c)
+  cFreq.forEach((freq, i) => {
+    Pc[c[i]] = freq / cTotal
+  })
+
+  // get unique x values across all observations, split into fields
+  let x = []
+  c.forEach(c => {
+    observations[c].forEach((row, r) => {
+      row.forEach((cell, c) => {
+        if (!x[c]) {
+          x[c] = []
+        }
+        x[c].push(cell)
+      })
+    })
+  })
+  x = x.map(field => field.filter((v, i, a) => a.indexOf(v) === i))
+
+  // get Px and Pcx
+  const probabilities = x.map((xRow, xi) => {
+    const out = []
+    xRow.forEach(x => {
+      const PxCounts = c.map(cname => observations[cname].filter(field => field.indexOf(x) !== -1).length + 1)
+      const Pxc = PxCounts.map((p, i) => p / observations[c[i]].length)
+      out.push({x, Pxc})
+    })
+    return out
+  })
+
+  return {Pc, probabilities}
 }
 
-try {
-  module.exports = Bayes
-} catch (if_this_is_from_the_web_then_ignore_this) {
-  console.log(if_this_is_from_the_web_then_ignore_this)
+/**
+ * Return object of outcomes based on trained model
+ * @param  {object} trainedModel Output from train()
+ * @param  {array} observations  Current observations
+ * @return {object}              Likelyhood of all outcomes
+ */
+const guess = (trainedModel, observations) => {
+  // TODO: validate all observations values are in trainedModel.probabilities
+  if (trainedModel.probabilities.length !== observations.length) {
+    throw new Error(`Incorrect observation length. It should be ${trainedModel.probabilities.length}.`)
+  }
+  const out = {}
+  observations.forEach((xVal, ix) => {
+    const x = trainedModel.probabilities[ix].filter(v => v.x === xVal).pop()
+    Object.keys(trainedModel.Pc).forEach((ic, i) => {
+      if (!out[ic]) {
+        out[ic] = trainedModel.Pc[ic]
+      }
+      out[ic] *= x.Pxc[i]
+    })
+  })
+
+  // normalize
+  const cTotal = Object.keys(out).map(c => out[c]).reduce((a, b) => a + b, 0)
+  Object.keys(out).forEach(ic => { out[ic] = out[ic] / cTotal })
+  return out
 }
+
+module.exports = {train, guess}

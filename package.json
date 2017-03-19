@@ -1,23 +1,37 @@
 {
   "name": "naive_bayes",
   "version": "0.0.1",
-  "description": "",
+  "description": "Naive Bayes classifier, in pure-javascript",
   "main": "bayes_binning.js",
   "scripts": {
-    "test": "mocha"
+    "test": "standard && mocha",
+    "test:watch": "npm test -- -w",
+    "build": "babel src/Bayes.js -o index.js",
+    "prepublish": "npm run build",
+    "postversion": "git push && git push --tags"
   },
+  "babel": {
+    "presets": ["latest"]
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.0",
+    "babel-preset-latest": "^6.24.0",
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0",
+    "standard": "^9.0.1"
+  },
+  "dependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kermitt/NaiveBayes_js.git"
   },
-  "author": "Kermitt <kermitt@github.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/kermitt/NaiveBayes_js/issues"
   },
   "homepage": "https://github.com/kermitt/NaiveBayes_js#readme",
-  "devDependencies": {
-    "chai": "^3.5.0",
-    "mocha": "^3.2.0"
-  }
+  "contributors": [
+    "Paul Montgomery <paul.montgomery@gmail.com> (https://github.com/kermitt)",
+    "David Konsumer <konsumer@jetboystudio.com> (https://github.com/konsumer)"
+  ]
 }

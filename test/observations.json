@@ -1,0 +1,20 @@
+{
+  "yes": [
+    ["Overcast", "Hot", "High", false], 
+    ["Sunny", "Mild", "High", false], 
+    ["Sunny", "Cool", "Normal", false], 
+    ["Overcast", "Cool", "Normal", true], 
+    ["Rainy", "Cool", "Normal", false], 
+    ["Sunny", "Mild", "Normal", false], 
+    ["Rainy", "Mild", "Normal", true], 
+    ["Overcast", "Mild", "High", true], 
+    ["Overcast", "Hot", "Normal", false]
+  ], 
+  "no": [
+    ["Rainy", "Hot", "High", false], 
+    ["Rainy", "Hot", "High", true], 
+    ["Sunny", "Cool", "Normal", true], 
+    ["Rainy", "Mild", "High", false], 
+    ["Sunny", "Mild", "High", true]
+  ]
+}
