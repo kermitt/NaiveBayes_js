@@ -50,8 +50,8 @@ Based on ideas and examples from here:
 console.log(bayes.guess(classifier, ['Rainy', 'Mild', 'Normal', true]))
 ```
 
-**yes**: `0.42862741256000775`,
-**no**: `0.5713725874399922`
+**yes**: `0.578368999421631`
+**no**: `0.421631000578369`
 
 To save a trained classifier, you could do this:
 
